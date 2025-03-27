@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genskins Aria.Studio - Shopify Personalization</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body, html {
+      font-family: 'Poppins', sans-serif;
+      background-color: black;
+      color: white;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .presentation {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+    
+    .slide {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5vh 8vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease-out;
+    }
+    
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .slide-content {
+      max-width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      max-height: 84vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .slide-content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    h1 {
+      font-size: 6vw;
+      text-transform: uppercase;
+      line-height: 0.9;
+      margin-bottom: 2vh;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-align: left;
+    }
+    
+    h2 {
+      font-size: 3.8vw;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 2vh;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-align: left;
+    }
+    
+    h3 {
+      font-size: 2.5vw;
+      margin-bottom: 1.5vh;
+      font-weight: 600;
+      text-align: left;
+    }
+    
+    p {
+      font-size: 1.8vw;
+      line-height: 1.3;
+      margin-bottom: 1.2vh;
+      text-align: left;
+      font-weight: 400;
+    }
+    
+    li {
+      font-size: 1.8vw;
+      line-height: 1.3;
+      margin-bottom: 1vh;
+      text-align: left;
+      list-style-position: outside;
+      margin-left: 1.5em;
+      font-weight: 400;
+    }
+    
+    ul {
+      margin-bottom: 1.5vh;
+      padding-left: 1vw;
+    }
+    
+    .price {
+      font-size: 3.2vw;
+      font-weight: 700;
+      margin: 1.5vh 0;
+      text-align: left;
+    }
+    
+    .border-frame {
+      position: absolute;
+      top: 3vh;
+      left: 3vw;
+      right: 3vw;
+      bottom: 3vh;
+      border: 2px solid white;
+      z-index: 1;
+    }
+    
+    .highlight {
+      display: inline-block;
+      background: white;
+      color: black;
+      padding: 0 10px;
+    }
+    
+    .split-content {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5vh;
+      gap: 4vw;
+    }
+    
+    .split-content div {
+      width: 48%;
+    }
+    
+    .full-width-line {
+      width: 100%;
+      height: 0.4vh;
+      background: white;
+      margin: 1.5vh 0;
+    }
+    
+    .cta {
+      display: inline-block;
+      border: 3px solid white;
+      padding: 1vh 2.5vw;
+      font-size: 2vw;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 2vh;
+      transition: all 0.3s ease;
+    }
+    
+    .cta:hover {
+      background: white;
+      color: black;
+      cursor: pointer;
+    }
+    
+    /* Text animations */
+    .animate-text {
+      opacity: 0;
+    }
+    
+    .slide.active .animate-text {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .slide.active .delay-1 { animation-delay: 0.05s; }
+    .slide.active .delay-2 { animation-delay: 0.1s; }
+    .slide.active .delay-3 { animation-delay: 0.15s; }
+    .slide.active .delay-4 { animation-delay: 0.2s; }
+    .slide.active .delay-5 { animation-delay: 0.25s; }
+    .slide.active .delay-6 { animation-delay: 0.3s; }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Specific slide adjustments */
+    #slide-3 li, #slide-4 li {
+      font-size: 1.7vw;
+      margin-bottom: 0.8vh;
+    }
+    
+    /* Fixed integration slide */
+    #slide-5 h2 {
+      font-size: 3vw; /* Further reduced for the longer title */
+      word-spacing: -1px; /* Tighten word spacing for the title */
+    }
+    
+    #slide-5 .price {
+      font-size: 2.8vw;
+      margin: 1vh 0;
+    }
+    
+    #slide-5 h3 {
+      font-size: 2vw;
+      margin-bottom: 0.8vh;
+    }
+    
+    #slide-5 li {
+      font-size: 1.5vw;
+      line-height: 1.2;
+      margin-bottom: 0.6vh;
+    }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 8vw; }
+      h2 { font-size: 5.5vw; }
+      h3 { font-size: 4vw; }
+      p, li { font-size: 3.2vw; }
+      .price { font-size: 5vw; }
+      .split-content { flex-direction: column; gap: 2vh; }
+      .split-content div { width: 100%; }
+      #slide-3 li, #slide-4 li { font-size: 3.2vw; }
+      #slide-5 h2 { font-size: 4.8vw; }
+      #slide-5 li { font-size: 3vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation">
+    <!-- SLIDE 1 -->
+    <div class="slide" id="slide-1">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h1 class="animate-text delay-1">GENSKINS <br>ARIA.STUDIO</h1>
+        <h3 class="animate-text delay-2">PERSONALIZAÇÃO <span class="highlight">SHOPIFY</span></h3>
+        <div class="full-width-line animate-text delay-3"></div>
+        <p class="animate-text delay-4">Transportando sua experiência visual</p>
+      </div>
+    </div>
+    
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-2">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h2 class="animate-text delay-1">REDEFINA SUA PRESENÇA ONLINE</h2>
+        <div class="full-width-line animate-text delay-2"></div>
+        <ul>
+          <li class="animate-text delay-3">Recriar a experiência visual da sua loja ReadyMag na Shopify</li>
+          <li class="animate-text delay-4">Benefícios da Shopify: Escalabilidade, segurança, e um ecossistema de apps robusto</li>
+          <li class="animate-text delay-5">Adaptar o design existente para a plataforma Shopify</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-3">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h2 class="animate-text delay-1">UI ON-BRAND</h2>
+        <div class="price animate-text delay-2">R$ 3.500,00</div>
+        <ul>
+          <li class="animate-text delay-3">Recriação do design da sua loja ReadyMag na Shopify</li>
+          <li class="animate-text delay-3">Layout responsivo e adaptado para dispositivos móveis</li>
+          <li class="animate-text delay-4">Configuração das páginas essenciais: Home, Produtos, Coleções, Sobre Nós, Contato</li>
+          <li class="animate-text delay-4">Importação de produtos</li>
+          <li class="animate-text delay-5">Otimização de SEO (títulos, meta descrições, URLs amigáveis)</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-4">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h2 class="animate-text delay-1">FUNCIONALIDADES ESSENCIAIS</h2>
+        <div class="full-width-line animate-text delay-2"></div>
+        <ul>
+          <li class="animate-text delay-3">Carrinho de compras otimizado e fácil de usar</li>
+          <li class="animate-text delay-3">Checkout seguro com diversas opções de pagamento (cartão, boleto, PIX)</li>
+          <li class="animate-text delay-4">Integração com gateways de pagamento populares (ex: PagSeguro, Mercado Pago)</li>
+          <li class="animate-text delay-4">Sistema de cálculo de frete automático (Correios, transportadoras)</li>
+          <li class="animate-text delay-5">Gestão de estoque eficiente e controle de variações de produtos</li>
+          <li class="animate-text delay-5">Área do cliente com histórico de pedidos e informações de entrega</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- SLIDE 5 - INTEGRAÇÕES AVANÇADAS - Kept original title but with smaller font -->
+    <div class="slide" id="slide-5">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h2 class="animate-text delay-1">INTEGRAÇÕES AVANÇADAS</h2>
+        <div class="price animate-text delay-2">R$ 2.500,00 <span style="font-size: 1.4vw; font-weight: 400;">(Opcional)</span></div>
+        <div class="split-content">
+          <div>
+            <h3 class="animate-text delay-3">MARKETING</h3>
+            <ul>
+              <li class="animate-text delay-4">Integração com ferramentas de e-mail marketing</li>
+              <li class="animate-text delay-4">Automação de e-mails de boas-vindas e promoções</li>
+              <li class="animate-text delay-5">Configuração de remarketing no Google/Facebook</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="animate-text delay-3">ANÁLISE</h3>
+            <ul>
+              <li class="animate-text delay-4">Aumento das conversões com anúncios</li>
+              <li class="animate-text delay-4">Integração com ferramentas de análise de dados</li>
+              <li class="animate-text delay-5">Monitoramento do comportamento dos usuários</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-6">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h2 class="animate-text delay-1">CRONOGRAMA DO PROJETO</h2>
+        <div class="full-width-line animate-text delay-2"></div>
+        <ul>
+          <li class="animate-text delay-3">Etapa 1 (10 dias): Desenvolvimento do tema Shopify e configuração das funcionalidades</li>
+          <li class="animate-text delay-3">Etapa 2 (10 dias): Testes e ajustes finais</li>
+          <li class="animate-text delay-4">Etapa 3 (5 dias): Entrega da loja</li>
+          <li class="animate-text delay-4">Etapa 4 (30 dias): Integrações Avançadas (opcional)</li>
+          <li class="animate-text delay-5">Etapa 5 (30 dias): Acompanhamento</li>
+          <li class="animate-text delay-5">Etapa 6: Entrega da loja otimizada</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- SLIDE 7 -->
+    <div class="slide" id="slide-7">
+      <div class="border-frame"></div>
+      <div class="slide-content">
+        <h2 class="animate-text delay-1"></h2>
+        <div class="full-width-line animate-text delay-2"></div>
+        <div class="split-content">
+          <div>
+            <h3 class="animate-text delay-3"></h3>
+            <p class="animate-text delay-4">UI ON-BRAND: <span class="highlight">R$ 3.500,00</span></p>
+            <p class="animate-text delay-4">Integrações Avançadas: <span class="highlight">R$ 2.500,00</span></p>
+          </div>
+          <div>
+
+            <h3 class="animate-text delay-3">Condições</h3>
+       
+            <p class="animate-text delay-5">Sinal de 50% para início do projeto e 50% na entrega</p>
+
+            <p class="animate-text delay-5">Logo da aria.studio no footer</p>
+
+            <p class="animate-text delay-5">Uso do site como portfólio da aria</p>
+          </div>
+        </div>
+<div></div>
+        <div class="cta animate-text delay-6">aria.studio</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const slides = document.querySelectorAll('.slide');
+      let currentSlide = 0;
+      let isAnimating = false;
+      
+      function showSlide(index) {
+        if (isAnimating) return;
+        isAnimating = true;
+        
+        // Hide current slide
+        slides[currentSlide].classList.remove('active');
+        
+        // Show new slide after a short delay
+        setTimeout(() => {
+          slides.forEach((slide, i) => {
+            slide.style.display = i === index ? 'flex' : 'none';
+          });
+          
+          // Activate the new slide (trigger animations)
+          slides[index].classList.add('active');
+          currentSlide = index;
+          
+          // Allow next animation after current completes
+          setTimeout(() => {
+            isAnimating = false;
+          }, 600);
+        }, 600);
+      }
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (isAnimating) return;
+        
+        if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+          if (currentSlide < slides.length - 1) {
+            showSlide(currentSlide + 1);
+          }
+          e.preventDefault();
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          if (currentSlide > 0) {
+            showSlide(currentSlide - 1);
+          }
+          e.preventDefault();
+        }
+      });
+      
+      // Wheel navigation with improved smoothness
+      let wheelThrottle = false;
+      
+      document.addEventListener('wheel', function(e) {
+        if (isAnimating || wheelThrottle) return;
+        
+        wheelThrottle = true;
+        
+        if (e.deltaY > 0 && currentSlide < slides.length - 1) {
+          showSlide(currentSlide + 1);
+          e.preventDefault();
+        } else if (e.deltaY < 0 && currentSlide > 0) {
+          showSlide(currentSlide - 1);
+          e.preventDefault();
+        }
+        
+        setTimeout(() => {
+          wheelThrottle = false;
+        }, 800);
+      }, { passive: false });
+      
+      // Touch navigation for mobile
+      let touchStartY = 0;
+      let touchStartX = 0;
+      let touchThreshold = 50;
+      
+      document.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      
+      document.addEventListener('touchend', function(e) {
+        if (isAnimating) return;
+        
+        const touchEndY = e.changedTouches[0].clientY;
+        const touchEndX = e.changedTouches[0].clientX;
+        const diffY = touchStartY - touchEndY;
+        const diffX = touchStartX - touchEndX;
+        
+        // Ensure it's a vertical swipe (more vertical than horizontal)
+        if (Math.abs(diffY) < touchThreshold || Math.abs(diffY) < Math.abs(diffX)) return;
+        
+        if (diffY > 0 && currentSlide < slides.length - 1) {
+          // Swipe up - go to next slide
+          showSlide(currentSlide + 1);
+        } else if (diffY < 0 && currentSlide > 0) {
+          // Swipe down - go to previous slide
+          showSlide(currentSlide - 1);
+        }
+      }, { passive: true });
+      
+      // Initialize the first slide
+      slides[0].style.display = 'flex';
+      setTimeout(() => {
+        slides[0].classList.add('active');
+      }, 100);
+    });
+  </script>
+</body>
+</html>
